@@ -88,8 +88,8 @@ EnoDischargeGage <- EnoDischargeGage %>%
 ```{r}
 EnoPlotDG <- ggplot(EnoDischargeGage) +
   geom_point(aes(x = Gage.Height, y = Discharge, 
-                 color = Year, alpha = 0.5)) +
-  scale_color_viridis_c()+
+                 color = as.factor(Year), alpha = 0.5)) +
+  scale_color_viridis_d()+
   labs(x = "Gage Height (ft)", y = "Discharge (ft^3/sec)")
 
 print(EnoPlotDG)
@@ -104,9 +104,17 @@ print(EnoPlotDG)
 * Remove x axis label
 * Add a horizontal line at the 0.5 quantile within each violin (hint: draw_quantiles)
 ```{r}
+EnoViolin <- ggplot(EnoDischargeGage) +
+  geom_violin(aes(x = as.factor(Year), y = Discharge, color = as.factor(Year)), 
+              draw_quantiles = 0.5) +
+  labs(x = "", y = "Discharge (ft^3/sec)") +
+  scale_color_viridis_d()
+
+
+print(EnoViolin)
 
 ```
 
 12. Interpret the graph you made. Write 2-3 sentences communicating the main takeaway points. 
 
-> ANSWER: 
+> ANSWER: This graph shows that most of the discharge for the Eno River occurs far below 5000 cubic feet per second because the 50% quantile is low on the y-axis for all 11 years. There are a few extreme events in each year that act as outliers causing the violin graphs to stretch up the y-axis. 2011 had the smallest extreme event, while 2018 had the largest extreme event. 
