@@ -86,7 +86,12 @@ EnoDischargeGage <- EnoDischargeGage %>%
 * Make points 50 % transparent
 
 ```{r}
+EnoPlotDG <- ggplot(EnoDischargeGage) +
+  geom_point(aes(x = Gage.Height, y = Discharge, 
+                 color = Year, alpha = 0.5)) +
+  scale_color_viridis_c()
 
+print(EnoPlotDG)
 ```
 
 10. Interpret the graph you made. Write 2-3 sentences communicating the main takeaway points. 
