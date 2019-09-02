@@ -89,14 +89,15 @@ EnoDischargeGage <- EnoDischargeGage %>%
 EnoPlotDG <- ggplot(EnoDischargeGage) +
   geom_point(aes(x = Gage.Height, y = Discharge, 
                  color = Year, alpha = 0.5)) +
-  scale_color_viridis_c()
+  scale_color_viridis_c()+
+  labs(x = "Gage Height (ft)", y = "Discharge (ft^3/sec)")
 
 print(EnoPlotDG)
 ```
 
 10. Interpret the graph you made. Write 2-3 sentences communicating the main takeaway points. 
 
-> ANSWER: 
+> ANSWER: As gage height increases, discharge also increases.  The relationship is not linear, and discharge increases faster with increasing gage height. The highest discharge and gage height event occurred in 2017.
 
 11. Create a ggplot violin plot of discharge, divided by year. (Hint: in your aesthetics, specify year as a factor rather than a continuous variable). Make the following edits to follow good data visualization practices: 
 
