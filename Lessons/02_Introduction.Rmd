@@ -171,9 +171,9 @@ EnoDischarge <-
 
 class(EnoDischarge$Date)
 
+rollmean(EnoDischarge$Discharge2, 30)
 
-
-EnoPlot2 <- 
+EnoPlot2 
 
 ```
 

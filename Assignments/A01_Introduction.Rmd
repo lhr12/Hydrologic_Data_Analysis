@@ -1,6 +1,6 @@
 ---
 title: "Assignment 1: Introduction"
-author: "Student Name"
+author: "Lindsay Roth"
 output: pdf_document
 geometry: margin=2.54cm
 editor_options: 
@@ -23,27 +23,27 @@ The completed exercise is due on 2019-09-04 before class begins.
 ## Course Setup
 1. Post the link to your forked GitHub repository below. Your repo should include one or more commits and an edited README file.  
 
->  Link:
+>  Link: https://github.com/lhr12/Hydrologic_Data_Analysis
 
 2. Complete the Consent Form in Sakai. You must choose to either opt in or out of the research study being conducted in our course.
 
 Did you complete the form? (yes/no)
 
-> 
+> yes
 
 ## Course Project
 
 3. What are some topics in aquatic science that are particularly interesting to you?
 
-> ANSWER: 
+> ANSWER: hydrology, hydrogeomorphology/fluvial geomorphology, water quality/toxicology, harmful algal blooms
 
 4. Are there specific people in class who you would specifically like to have on your team?
 
-> ANSWER: 
+> ANSWER: If I'm working on a project related to HABs, it might be helpful to have members of my MP on my team (Caroline Watson, Tristen Townsend, Jake Greif), but if it is a different topic I'm open to working with anyone in the class.
 
 5. Are there specific people in class who you would specifically *not* like to have on your team?
 
-> ANSWER: 
+> ANSWER: No.
 
 ## Data Visualization Exercises
 
