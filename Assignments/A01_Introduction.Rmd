@@ -73,7 +73,10 @@ names(EnoDischargeGage)[4:7] <- c("Discharge", "Approval.Code.Discharge",
 8. Add a "year" column to your data frame (hint: lubridate has a `year` function).
 
 ```{r}
+class(EnoDischargeGage$Date)
 
+EnoDischargeGage <- EnoDischargeGage %>%
+  mutate(Year = year(Date))
 ```
 
 9. Create a ggplot of discharge vs. gage height, with gage height as the x axis. Color each point by year. Make the following edits to follow good data visualization practices: 
