@@ -7,7 +7,7 @@ geometry: margin=2.54cm
 editor_options: 
   chunk_output_type: console
 ---
-testtesttest
+
 ## Lesson Objectives
 1. Investigate the concepts of lake stratification and mixing by analyzing monitoring data
 2. Apply data analytics skills to applied questions about physical properties of lakes
@@ -15,9 +15,13 @@ testtesttest
 
 ## Opening Discussion
 What is a lake? How does this differ from a stream, river, or wetland?
-
+Body of water of a certain size, low enough threshold of inputs/outputs
+landlocked, within a depression, cannot be connected to ocean (would be an estuary)
+light does not penetrate to bottom of a lake
+possible volume/flow ratio
 What are the physical properties of lakes?
-
+differentiation between wetland and lake possibly depth/temperature/ecology
+lentic system: still water
 ## Session Set Up
 ```{r, message = FALSE}
 # Check working directory (should be project file location)
