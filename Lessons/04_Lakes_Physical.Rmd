@@ -17,6 +17,14 @@ editor_options:
 ## Opening Discussion
 We analyzed temperature profiles and seasonal changes on Wednesday. What were some key takeaway points about thermal stratification and mixing?
 
+-epilimnion: surface layer of a lake
+-hypolimnion: bottom layer of a lake
+-metalimnion: middle transitional layer of a lake (thermocline)
+-layers are not always present (shallow water, spring and fall mixing)
+-the reason the layers don't mix in the summer is due to the strong density gradient
+-4˚C is where liquid water is at its most dense
+
+
 ## Session Set Up
 ```{r, message = FALSE}
 getwd()
@@ -60,7 +68,8 @@ Tempprofiles2016 <-
   geom_point() +
   scale_y_reverse() +
   scale_x_continuous(position = "top") +
-  scale_color_viridis_c(end = 0.8, option = "magma") +
+  scale_color_viridis_c(end = 0.8, option = "magma") + 
+  #0.8 telling viridis not to use yellow
   labs(x = expression("Temperature "(degree*C)), y = "Depth (m)") +
   theme(legend.position = "none")
 print(Tempprofiles2016)
@@ -96,15 +105,15 @@ print(Physicalprofiles2016)
 
 How do temperature profiles vary over the course of a season? What are the mechanisms for this pattern?
 
-> 
+> Surface tempuratures seem to reach a peak high around July and a minimum in May.
 
 How do irradiance profiles vary over the course of a season? What are the mechanisms for this pattern?
 
-> 
+> Irradiance is highest at the surface during the month of June, and lowest during the earlier and later months. Possible reasons for higher irradiance at lower depths in earlier months may be due to a lack of plant growth, allowing for light to penetrate deeper.
 
 How do dissolved oxygen profiles vary over the course of a season? What are the mechanisms for this pattern?
 
-> 
+> Dissolved oxygen is moderately high until you reach 3-5 meters, where it increases and then sharply decreases to zero after 5 meters depth. Dissolved oxygen is highest in May and then decreases over the course of the summer. Oxygen is decreasing over time because as the temperature increases, there is less dissolved oxygen. Colder water has less capacity to hold oxygen. Deap chlorophyll maximum: just enough light to grow with higher levels of nutrients from hypolimnion; reason for jump in DO at 3-5 m depth. Respiration in hypolimnion taking up dissolved oxygen
 
 
 ## Data Analysis
@@ -122,8 +131,62 @@ Steps:
 5. Create a ggplot of surface temps by date and facet by month. Add `geom_smooth(se = FALSE, method = lm)` to the plot to display the regression line.
 
 ```{r}
+class(Pauldata$sampledate)
+
+#Steps 1 &2
+Pauldata.surface <- Pauldata %>%
+  mutate(Month = month(sampledate)) %>%
+  filter(Month == 5 | Month == 6 | Month == 7 | Month == 8) %>%
+  filter(depth == 0.00)
+
+#Step 3
+Pauldata.May <- Pauldata.surface %>%
+  filter(Month == 5)
+
+Pauldata.Jun <- Pauldata.surface %>%
+  filter(Month == 6)
+
+Pauldata.Jul <- Pauldata.surface %>%
+  filter(Month == 7)
+
+Pauldata.Aug <- Pauldata.surface %>%
+  filter(Month == 8)
+
+#Step 4
+May.Test <- lm(temperature_C ~ year4, Pauldata.May)
+summary(May.Test)
+
+Jun.Test <- lm(temperature_C ~ year4, Pauldata.Jun)
+summary(Jun.Test)
+
+Jul.Test <- lm(temperature_C ~ year4, Pauldata.Jul)
+summary(Jul.Test)
+
+Aug.Test <- lm(temperature_C ~ year4, Pauldata.Aug)
+summary(Aug.Test)
+
+#Step 5
+#May: each year increase 0.01 degrees C
+0.01*33
+#0.33 degree increase over period of study for May
+#June: each year increase 0.001 degrees C
+0.001*33
+#0.033 degree increase over period of study for June
+#July: each year increase 0.06 degrees C
+0.06*33
+#1.98 degree increase over period of study for July
+#August: each increase 0.04 degrees C
+0.04*33
+#1.32 degree increase over period of study for August
 
 
+#Step 6
+TempChangePlot <- 
+  ggplot(Pauldata.surface, aes(x = sampledate, y = temperature_C)) +
+  geom_point() +
+  geom_smooth(se = FALSE, method = lm) +
+  facet_grid(rows = vars(Month))
+print(TempChangePlot)
 
 ```
 
