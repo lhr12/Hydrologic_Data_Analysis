@@ -109,8 +109,8 @@ print(TuesdayTempProfiles)
 JulyData <- NTLdata %>%
   filter(lakename == "Peter Lake" | lakename == "Paul Lake" |
            lakename == "Tuesday Lake") %>%
-  filter(sampledate == "7/25/16" | sampledate == "7/26/16" |
-           sampledate == "7/27/16")
+  filter(sampledate == 2016-07-25 | sampledate == 2016-07-26 |
+           sampledate == 2016-07-27)
 
 ```
 
