@@ -33,6 +33,7 @@ getwd()
 library(tidyverse)
 library(lubridate)
 library(cowplot)
+#update.packages(c("knitr", "stringr", "stringi"))
 
 NTLdata <- read.csv("./Data/Raw/NTL-LTER_Lake_ChemistryPhysics_Raw.csv")
 
@@ -117,13 +118,14 @@ JulyData <- NTLdata %>%
 9. Plot a profile line graph of temperature by depth, one line per lake. Each lake can be designated by a separate color.
 
 ```{r}
+as.numeric(JulyData$temperature_C)
+
 TempprofilesJuly<- 
   ggplot(JulyData, aes(x = temperature_C, y = depth, color = lakename)) +
   geom_line() +
   scale_y_reverse() +
   scale_x_continuous(position = "top") +
-  scale_color_viridis_d(end = 0.8, option = "magma") + 
-  #0.8 telling viridis not to use yellow
+  scale_color_viridis_d(end = 0.8) + 
   labs(x = expression("Temperature "(degree*C)), y = "Depth (m)")
 print(TempprofilesJuly)
 
