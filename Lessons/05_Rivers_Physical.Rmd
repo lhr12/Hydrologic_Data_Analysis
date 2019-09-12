@@ -15,6 +15,17 @@ editor_options:
 
 ## Opening Discussion
 What are the physical properties of streams and rivers? What variables might be of interest?
+-discharge (volume/time)
+-flow velocity (horizontal distance/time)
+-slope
+-inputs
+-stage
+-roughness -> erosion
+-cross-sectional area
+-mixing and temperature (gradient?)
+-turbulent and laminar flow
+-turbidity
+
 
 ## Session Set Up
 
@@ -46,6 +57,7 @@ DvsGHplot <-
   ggplot(EnoDischarge.ratingcurve, aes(x = Discharge, y = Gage.Height)) +
   geom_point(alpha = 0.5) 
 print(DvsGHplot)
+#curve is logarithmic. when you flip the axes, curve becomes exponential
 ```
 
 ### Data import
@@ -200,15 +212,17 @@ print(CombinedPlot)
 
 How does the magnitude of discharge compare for these rivers?
 
->
+>Wetter regions have higher discharge (NC, Montana), the Nehalem and Sauk have similar scales, and the Verde has the least discharge with random anomaly spikes.
 
 Which of these rivers have a seasonal cycle of discharge? How might you explain the presence and timing of seasonal cycles based on climatic conditions?
 
->
+>In areas where precipitation is less seasonal, like the Eno and the Sauk, there do not seem to be annual patterns of discharge, but just more anomalies spread out irregularly across the graph. HOwever, the Sauk river is in a cold enough climate that precipitation falls as snow and flows may be frozen, so discharge decreases in winter months. This seasonal cycle seems to have broken down over the last 5 years or so, this could possibly be attributed to a warming climate. The Nehalem River seems to have seasonal runoff in winter months, the Bitterroot seems to have seasonal runoff in the spring (perhaps due to snowmelt).  The Verde river does nothave any seasonality since it is not constantly flowing, but rather has rare jumps in runoff from specific rainstorm events.
 
 Hypothetical question: If you wanted to create a ggplot using facets instead of `plot_grid`, how would you go about wrangling your dataset differently? 
 
->
+>Make the verde y axis on a log scale to better be able to visualize anomalies; Make a column with site name to be able to facet graph. Can do it in one plot rather than combining 5 different plots.
+
+***RBIND!!! TO COMBINE DATASETS ONE ON TOP OF THE OTHER!!!!!!***
 
 ## Defining "typical" discharge pattern
 Let's take the Bitterroot River, which displays a clear seasonal cycle. Let's define the median discharge on a given day of year and overlay this onto the range experienced. We will take a longer period of record this time.
@@ -222,6 +236,7 @@ names(BitterrootDischarge.Historical)[4:5] <- c("Discharge", "Approval.Code")
 
 BitterrootDischarge.Historical <- mutate(BitterrootDischarge.Historical, 
                                          DOY = yday(Date))
+#yday in lubridate package = day of year
 
 BitterrootDischarge.Pattern <- BitterrootDischarge.Historical %>%
   group_by(DOY) %>%
