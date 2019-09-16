@@ -29,8 +29,36 @@ The completed exercise is due on 18 September 2019 at 9:00 am.
 5. Build a ggplot of discharge over the entire period of record. 
 
 ```{r}
+#verify working directory
+getwd()
 
+#load packages
+library(tidyverse)
+library(dataRetrieval)
+library(cowplot)
+library(lubridate)
 
+#set theme
+theme_set(theme_classic())
+
+#Load data
+MysterySiteDischarge <- readNWISdv(siteNumbers = "03431700",
+                     parameterCd = "00060", # discharge (ft3/s)
+                     startDate = "",
+                     endDate = "")
+
+#check units for discharge
+attr(MysterySiteDischarge, "variableInfo")
+
+#rename columns
+names(MysterySiteDischarge)[4:5] <- c("Discharge", "Approval.Code")
+
+#ggplot for discharge over time
+MysteryPlot <- 
+  ggplot(MysterySiteDischarge, aes(x = Date, y = Discharge)) +
+         geom_line() +
+         xlab("Year")
+print(MysteryPlot)
 ```
 
 ## Analyze seasonal patterns in discharge
@@ -39,13 +67,32 @@ The completed exercise is due on 18 September 2019 at 9:00 am.
 6. Create a new data frame called "MysterySiteDischarge.Pattern" that has columns for Day.of.Year, median discharge for a given day of year, 75th percentile discharge for a given day of year, and 25th percentile discharge for a given day of year. Hint: the summarise function includes `quantile`, wherein you must specify `probs` as a value between 0 and 1.
 7. Create a plot of median, 75th quantile, and 25th quantile discharges against day of year. Median should be black, other lines should be gray. 
 ```{r}
+#create year and day of year columns
+MysterySiteDischarge <- MysterySiteDischarge %>%
+  mutate(Year = year(Date), Day.of.Year = yday(Date))
+
+#create new dataframe with median and quantiles
+MysterySiteDischarge.Pattern <- MysterySiteDischarge %>%
+  group_by(Day.of.Year) %>%
+  summarise(Median.Discharge = median(Discharge),
+         Percentile75 = quantile(x = Discharge, probs = 0.75),
+         Percentile25 = quantile(x = Discharge, probs = 0.25))
+
+#plot median and quantiles
+MysteryPatternPlot <- 
+  ggplot(MysterySiteDischarge.Pattern, aes(x = Day.of.Year)) +
+  geom_line(aes(y = Median.Discharge)) +
+  geom_line(aes(y = Percentile25), color = "gray") +
+  geom_line(aes(y = Percentile75), color = "gray") +  
+  labs(x = "Day of Year", y = expression("Discharge (ft"^3*"/s)")) 
+print(MysteryPatternPlot)
 
 
 ```
 
 8. What seasonal patterns do you see? What does this tell you about precipitation patterns and climate in the watershed?
 
-> 
+> There is a clear seasonal pattern in this data. There is an increase in runoff volume and variability during the winter and spring months, lasting from approximately early December to late April/early May. During the summer and fall months, discharge decreases to very low volume and more consistent levels. This tells me that this watershed has more precipitation events during the winter and spring and not many during the summer and fall.  The temperatures at this watershed do not reach below freezing during the winter or spring, as there is no evidence of a decrease in runoff in the winter that would normally seen as evidence of snow/ice. Usually, this kind of precipitation pattern occurs in Mediterranean climates. I would expect this watershed to be located along the western coast of the United States at a location that is not cold enough to receive precipitation as snow or have frozen rivers but that may be affected by runoff from snowmelt from surrounding mountainous areas.There are regular precipitation events from December to April that result in greater variation in runoff and a dry summer that creates the opposite effect.
 
 ## Create and analyze recurrence intervals
 
@@ -56,27 +103,71 @@ The completed exercise is due on 18 September 2019 at 9:00 am.
 11. Create a model to predict the discharge for a 100-year flood for both sets of recurrence intervals. 
 
 ```{r}
+#create dataframe for first 30 years with recurrence interval columns
+MysterySite.Annual.30yr <- 
+  MysterySiteDischarge %>%
+  filter(Year < 1996) %>%
+  group_by(Year) %>%
+  summarise(PeakDischarge = max(Discharge)) %>% 
+  mutate(Rank = rank(-PeakDischarge), #negative to make sure it's the right order
+         RecurrenceInterval = (length(Year) + 1)/Rank, 
+         Probability = 1/RecurrenceInterval)
+
+#datafram for full data with recurrence interval columns
+MysterySite.Annual.Full <- 
+  MysterySiteDischarge %>%
+  group_by(Year) %>%
+  summarise(PeakDischarge = max(Discharge)) %>% 
+  mutate(Rank = rank(-PeakDischarge), #negative to make sure it's the right order
+         RecurrenceInterval = (length(Year) + 1)/Rank, 
+         Probability = 1/RecurrenceInterval)
+
+#plot discharge vs recurrence interval
+MysteryoRecurrencePlot <- 
+  ggplot(MysterySite.Annual.30yr, 
+         mapping = aes(x = RecurrenceInterval, y = PeakDischarge)) +
+  geom_point() +
+  geom_point(MysterySite.Annual.Full, color = "#02818a",
+             mapping = aes(x = RecurrenceInterval, y = PeakDischarge)) +
+  labs(x = "Recurrence Interval", y = expression("Peak Discharge (ft"^3*"/s)"))
+print(MysteryoRecurrencePlot)
+
+#build model
+Mystery.30year.model <- lm(data = MysterySite.Annual.30yr, 
+                           PeakDischarge ~ log(RecurrenceInterval))
+summary(Mystery.30year.model)
+
+Mystery.30year.model$coefficients[1] + 
+  Mystery.30year.model$coefficients[2]*log(100)
+#Predicted 100 year flood 5538.257 cfs
+
+Mystery.full.model <- lm(data = MysterySite.Annual.Full, 
+                         PeakDischarge ~ log(RecurrenceInterval))
+summary(Mystery.full.model)
 
 
+Mystery.full.model$coefficients[1] + 
+  Mystery.full.model$coefficients[2]*log(100)
+#Predicted 100 year flood 4843.717 cfs
 ```
 
 12. How did the recurrence interval plots and predictions of a 100-year flood differ among the two data frames? What does this tell you about the stationarity of discharge in this river?
 
-> 
+> The predicted 100 year flood from the first 30 years of data is about 700 cfs larger than the predicted 100 year flood from the full set of data.  This means that the stationarity of discharge in this river is not constant, and that discharge has been decreasing with time. 
 
 ## Reflection
 13. What are 2-3 conclusions or summary points about river discharge you learned through your analysis?
 
->
+> Conclusion 1: There is a seasonal precipitation pattern for this site where it rains during the winter and spring months without freezing and is dry during the summer and fall months. Conclusion 2: There were larger extreme runoff events in the first 30 years of data versus the entire dataset, as shown by the larger predicted 100 year flood, and indicating that runoff is decreasing with time. 
 
 14. What data, visualizations, and/or models supported your conclusions from 13?
 
-> 
+> The summarized daily discharge plot with the median, 75th and 25th quantiles for each day of the year provided me with the evidence I needed to conlcude the seasonality of runoff, and the plot with Peak Discharge vs Recurrence Interval showed me the pattern of decreasing extreme events.
 
 15. Did hands-on data analysis impact your learning about discharge relative to a theory-based lesson? If so, how?
 
->
+>I always learn better with graphs and visualizations, and it was easier for me to see visual patterns of discharge and trends than to learn about them theoretically.
 
 16.	How did the real-world data compare with your expectations from theory?
 
->
+>From what I have learned about climate change, I would have expected extreme events to increase with time rather than decrease.  This site proved to be the opposite case. However, since I predicted that this location is somewhere along the west coast of the US, it could make sense that increasing periods of drought with a hotter drier climate could impact the intensity of large storm events.
