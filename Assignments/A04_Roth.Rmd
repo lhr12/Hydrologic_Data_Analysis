@@ -57,19 +57,21 @@ data.raw <- readNWISqw(siteNumbers = "02097314", #New Hope Creek at Blands
                      startDate = "",
                      endDate = "")
 
-dat.02 <- data.raw %>%
+O2.dat <- data.raw %>%
   select(c(sample_dt, result_va))
 
-class(dat.02$Date)
-class(dat.02$Oxygen)
 
-names(dat.02) <- c("Date","Oxygen")
+names(O2.dat) <- c("Date","Oxygen")
+
+
+class(O2.dat$Date)
+class(O2.dat$Oxygen)
 ```
 
 5. Create a ggplot of oxygen concentrations over time. Include a horizontal line at 2 mg/l to show the hypoxia cutoff. 
 
 ```{r}
-Oxygen.Plot <- ggplot(dat.02) +
+Oxygen.Plot <- ggplot(O2.dat) +
   geom_point(aes(x = Date, y = Oxygen)) +
   geom_hline(yintercept = 2, color = "blue") +
   labs(y = "Oxygen (mg/L)") +
@@ -148,7 +150,7 @@ discharge.skinny <- discharge.dat %>%
 
 11. Create a dygraph of discharge and oxygen concentrations. You should have discharge on the y axis and oxygen concentration on the y2 axis. Set your y-axes limits so that they don't change as you zoom in and out. (hint: use `dyAxis(..., valueRange = c(0, 6500))` for discharge & `dyAxis(..., valueRange = c(0, 13))` for oxygen).
 ```{r}
-Oxygen <- with(dat.02, xts(x = Oxygen, order.by = Date))
+Oxygen <- with(O2.dat, xts(x = Oxygen, order.by = Date))
 Discharge <- with(discharge.skinny, xts(x = Discharge, order.by = Date))
 
 DyDat <- cbind(Oxygen, Discharge)

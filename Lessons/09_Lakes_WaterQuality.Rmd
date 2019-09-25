@@ -15,6 +15,13 @@ editor_options:
 
 ## Opening Discussion
 What are the major water quality impairments experienced in lakes?  
+-dissolved oxygen
+-nutrients: N,P,trace
+-microbes
+-odor/color
+-invasive species
+-HABs
+-contaminants
 
 ## Session Set Up
 
@@ -27,7 +34,7 @@ library(lubridate)
 library(LAGOSNE)
 
 theme_set(theme_classic())
-options(scipen = 100)
+options(scipen = 100) #keep number out of scientific notation up to 100th decimal place
 
 lagosne_get(dest_folder = LAGOSNE:::lagos_path(), overwrite = TRUE)
 
@@ -49,7 +56,7 @@ LAGOSdata <- lagosne_load()
 names(LAGOSdata)
 
 # If the package installation and data download has not worked, use this code: 
-# load(file = "./Data/Raw/LAGOSdata.rda")
+#load(file = "./Data/Raw/LAGOSdata.rda")
 
 # Exploring the data types that are available
 LAGOSlocus <- LAGOSdata$locus
@@ -71,6 +78,7 @@ Add notes about each line of code as we go along. What does each function do?
 ```{r}
 # Join data frames
 LAGOSlocations <- left_join(LAGOSlocus, LAGOSstate, by = "state_zoneid")
+#left join means that we take everything from df on the left and add columns from df on the right by the column that they both have in common
 
 # Order by number of lakes
 LAGOSlocations <- 
@@ -126,7 +134,7 @@ Let's look at observations of chl, secchi depth, and TP seasonally and over the 
 chlbymonth <-  
 ggplot(LAGOStrophic, 
        aes(x = as.factor(samplemonth), y = chla, color = sampleyear)) +
-  geom_jitter(alpha = 0.2) +
+  geom_jitter(alpha = 0.2) + #within a month, it will spread out the data points randomly so you can visualize the data better
   labs(x = "Month", y = expression(Chlorophyll ~ a ~ (mu*g / L)), color = "Year") +
   scale_color_viridis_c(option = "magma")
 print(chlbymonth)
