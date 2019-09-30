@@ -205,7 +205,7 @@ print(chlvstp)
 
 What is the observed relationship, and how does it depart from the 1:1 relationship? What do values above or below the 1:1 line tell us about the conditions present in a lake?
 
-> 
+> ChlA predicts more eutrophic and hypereutrophic lakes than secchi depth and phosphorus
 
 ### Comparing TSI across states
 Here are three different ways to envision TSI across the states in the LAGOS-NE database. 
@@ -251,3 +251,8 @@ What insights do we gain from the different visualizations?
 
 ## Closing Discussion
 What factors might you expect to influence TSI scores in a given area? What are some variables in the LAGOSNE database that could help you test your hypothesis?
+
+```{r}
+write.csv(LAGOStrophic, "./Data/LAGOStrophic.csv", row.names = FALSE)
+```
+
