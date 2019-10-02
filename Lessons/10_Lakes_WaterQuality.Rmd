@@ -50,7 +50,7 @@ In your group, look through the LAGOS-NE database and decide on 5 variables avai
 
 > Variable 2: lulc 500 buffer 2011 23 pct
 
-> Variable 3: lulc 500 buffer 2011 11 pct
+> Variable 3: atm.dep. of N
 
 > Variable 4: ChlA
 
@@ -71,9 +71,12 @@ LAGOStotal <- left_join(LAGOSlocus, LAGOSstate, by = "state_zoneid") %>%
   left_join(LAGOSlucl, LAGOStotal, by = "lagoslakeid") %>%
   left_join(LAGOSchag, LAGOStotal, by = "hu8_zoneid") %>%
   select(lagoslakeid, sampledate, chla, tp, tn, secchi, 
-         gnis_name, lake_area_ha, state, state_name,  ,hu8_dep_totaln_2010_mean) %>%
-  drop_na(chla:secchi)
+         gnis_name, lake_area_ha, state, state_name, 
+         buffer500m_nlcd2011_pct_21, buffer500m_nlcd2011_pct_23, 
+         hu8_dep_totaln_2010_mean) %>%
+  drop_na()
 
+names(LAGOStotal)[11:13] <- c("Crop", "CAFO", "DepN")
 ```
 
 Examine potential correlations among your predictor variables. If your predictor variables are highly correlated with each other, your model will suffer from *multicollinearity,* essentially that two or more of your predictor variables provide redundant information. Model fit and accuracy of model coefficients suffer when multicollinearity is present. 
@@ -81,27 +84,33 @@ Examine potential correlations among your predictor variables. If your predictor
 1. Create a correlation plot for your 7 variables of interest (TN, TP, and the five predictor variables). What patterns do you see? (hint: function `corrplot` in the corrplot package. I like to use `upper = "ellipse"` inside the function).
 
 ```{r}
-
+corrplot(cor(LAGOStotal[,c(3:6,11:13)]), method = "circle")
 ```
 
 What patterns do you see?
 
->
-
 2. Create two linear regression models (hint: function `lm`) to predict TN and TP using your five predictor variables. 
 
 ```{r}
+tn.test <- lm(tn ~ chla + secchi + buffer500m_nlcd2011_pct_21 + 
+   buffer500m_nlcd2011_pct_23 + hu8_dep_totaln_2010_mean, LAGOStotal)
+summary(tn.test)
+
+tp.test <- lm(tp ~ chla + secchi + buffer500m_nlcd2011_pct_21 + 
+   buffer500m_nlcd2011_pct_23 + hu8_dep_totaln_2010_mean, LAGOStotal)
+summary(tp.test)
 
 ```
 
 How much variance in TN and TP is accounted for by your full model?
 
->
+> For tn it accounts for 18% of the variance for nitrogen, for tp it accounts for 46 % of the variance
 
 3. Calculate variance inflation factors (VIF) for each of the variables in both models (hint: `vif` function in the car package). VIF values exceeding 5-10 indicates an issue with multicollinearity for that variable. Note: you should evaluate VIF values separately for each model.
 
 ```{r}
-
+vif(tn.test)
+vif(tp.test)
 ```
 
 Which variable(s) might you choose to remove from each model based on VIF values?
