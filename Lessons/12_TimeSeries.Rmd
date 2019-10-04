@@ -55,11 +55,11 @@ In general, detecting a monotonic trend requires a long sequence of data with fe
 
 Adjusting the data may be necessary to fulfill the assumptions of a trend test. These adjustments include **aggregation**, **subsampling**, and **interpolation**. What do each of these mean, and why might we want to use them?
 
-> aggregation: 
+> aggregation: combining data points into summarized groups (mean, median, range, etc). could be used to eliminate seasonality and look at larger trends. ex: daily -> weekly or monthly data. used to reduce number of rows in dataset.
 
-> subsampling: 
+> subsampling: using only part of dataset, can zoom in on particular time period or even out frequency of data samples
 
-> interpolation: 
+> interpolation: using existing data to generate data to fill in gaps
 
 Specific tests for monotonic trend analysis are listed below, with assumptions and tips: 
 
@@ -125,14 +125,14 @@ We see that TP data were collected somewhere between biweekly and monthly across
 
 Common interpolation methods: 
 
-* **Piecewise constant**: <fill in notes here>
-* **Linear**: <fill in notes here>
-* **Spline**: <fill in notes here>
+* **Piecewise constant**: <at any point, you're going to take the nearest neighbor and use that as your estimation>
+* **Linear**: <connect data points with a line, any point predicted to fall on that line between points>
+* **Spline**: <uses quadratic formulas to interpolate data, might be able to catch unknown local max and mins>
 
 Linear interpolation is most common for water quality data, and fits with our understanding about how TP might change over time in this system. 
 ```{r}
 # Generate monthly values from July 1988 to August 2013
-linearinterpolation <- as.data.frame(approx(Mendotadata, n = 303, method = "linear"))
+linearinterpolation <- as.data.frame(approx(Mendotadata, n = 303, method = "linear")) #generates dates as days since 1/1/1970
 linearinterpolation$x <- as.Date(linearinterpolation$x, origin = "1970-01-01")
 names(linearinterpolation) <- c("Date", "TP")
 
@@ -154,11 +154,14 @@ Mendotatrend <- smk.test(Mendotatimeseries)
 Mendotatrend
 summary(Mendotatrend)
 
+#z-score tells you direction of the trend (posidive or negative) and the magnitude
+#S = difference between one point and the next summed up. Larger S = greater magnitude of trend 
+#varS = 
 ```
 
 What would we conclude based on these findings? Describe as you would to an educated but non-specialist audience.
 
->
+>cannot reject null hypothesis, no significant trend over time. if it was significant, would be negative trend. there is a decreasing trend in phosphorus for the months of October and November between 1988 and 2013.
  
 If a significant trend was present, we could compute a **Sen's Slope** to quantify that trend (`sens.slope` function in the trend package).
  
@@ -185,7 +188,7 @@ names(ClearCreekDischarge)[4:5] <- c("Discharge", "Approval.Code")
 ClearCreekDischarge.Monthly <- ClearCreekDischarge %>%
   mutate(Year = year(Date), 
          Month = month(Date)) %>%
-  group_by(Year, Month) %>%
+  group_by(Year, Month) %>% #want monthly summaries for each year, so also group by year
   summarise(Discharge = mean(Discharge))
     
 ClearCreek_ts <- ts(ClearCreekDischarge.Monthly[[3]], frequency = 12)
