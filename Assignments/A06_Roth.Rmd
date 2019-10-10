@@ -111,16 +111,16 @@ summary(ClearCreektrend)
 ## Reflection
 15. What are 2-3 conclusions or summary points about time series you learned through your analysis?
 
->
+>Seasonal fluctuations can vary greatly between sites and just because there are large variations in measurements over time does not mean that there are overall trends. 
 
 16. What data, visualizations, and/or models supported your conclusions from 12?
 
-> 
+> The seasonal and trend decompositions for the Eno and Clear Creek supported my conclusions.
 
 17. Did hands-on data analysis impact your learning about time series relative to a theory-based lesson? If so, how?
 
->
+>The breakdown of the seasonal mann-kendall test helped in my understanding of time series analysis.
 
 18.	How did the real-world data compare with your expectations from theory?
 
->
+>The real world data did not differ much from my expectations.
