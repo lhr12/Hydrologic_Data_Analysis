@@ -113,14 +113,14 @@ ggplot(Kansas.flow, aes(x = DateTime_UTC, y = Discharge_m3s)) +
   geom_line(mapping = aes(x = DateTime_UTC, y = qft), color = "steelblue4") +
   labs(x = "Date", y = expression("Discharge (m"^3*"/s)"))
 
-dygraph(
-  cbind(
-    Flow = with(Kansas.flow, xts(Discharge_m3s, order.by = DateTime_UTC)), 
-    Baseflow = with(Kansas.flow, xts(bt, order.by = DateTime_UTC)), 
-    Quickflow = with(Kansas.flow, xts(qft, order.by = DateTime_UTC))
-  )
-  ) %>% 
-  dyRangeSelector()
+#dygraph(
+#  cbind(
+#    Flow = with(Kansas.flow, xts(Discharge_m3s, order.by = DateTime_UTC)), 
+#    Baseflow = with(Kansas.flow, xts(bt, order.by = DateTime_UTC)), 
+#    Quickflow = with(Kansas.flow, xts(qft, order.by = DateTime_UTC))
+#  )
+#  ) %>% 
+#  dyRangeSelector()
 
 Export <- Kansas.flow %>%
   mutate(timestep = c(diff(as.numeric(DateTime_UTC)), NA_real_),
